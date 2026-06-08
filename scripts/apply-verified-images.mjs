@@ -1,0 +1,115 @@
+import fs from 'fs';
+
+/** Wikimedia Commons URLs verified via API or long-standing use in this project */
+const V = {
+  nazarethBW: 'https://upload.wikimedia.org/wikipedia/commons/b/b5/Nazaret_Verkuendigungsbasilika_BW_16.JPG',
+  annunciationInside: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/AnnunciationChurchNazarethInside1.jpg',
+  annunciationInside2019: 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Interior_of_the_Church_of_the_Annunciation%2C_2019_%2805%29.jpg',
+  nazarethPanorama: 'https://upload.wikimedia.org/wikipedia/commons/9/9c/Panorama_from_Arab_Cemetery_-_Nazareth_-_Israel_%285699038205%29.jpg',
+  nativityInterior: 'https://upload.wikimedia.org/wikipedia/commons/6/67/Church_of_the_Nativity_%28Bethlehem%29_-_interior11.JPG',
+  nativityGrotto: 'https://upload.wikimedia.org/wikipedia/commons/9/98/Birthplace_in_the_Grotto_of_the_Nativity_2010_2.jpg',
+  nativityExt: 'https://upload.wikimedia.org/wikipedia/commons/4/46/Church_of_the_Nativity_Bethlehem.jpg',
+  westernWall: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/Westernwall2.jpg',
+  templeMount: 'https://upload.wikimedia.org/wikipedia/commons/d/dc/Jerusalem_Temple_Mount_view_from_Mount_of_Olives_%286035890417%29.jpg',
+  templeModel: 'https://upload.wikimedia.org/wikipedia/commons/6/63/Model_of_Jerusalem_in_the_Late_Second_Temple_Period-Israel_Museum.jpg',
+  templeModel2: 'https://upload.wikimedia.org/wikipedia/commons/3/3a/Second_Temple_Model%2C_Israel_Museum_%288528809737%29.jpg',
+  holySepulchre: 'https://upload.wikimedia.org/wikipedia/commons/1/11/Church_of_the_Holy_Sepulchre%2C_Jerusalem.jpg',
+  holySepulchreBW: 'https://upload.wikimedia.org/wikipedia/commons/6/66/Jerusalem_Holy_Sepulchre_BW_15.JPG',
+  mountOlives: 'https://upload.wikimedia.org/wikipedia/commons/9/95/Jerusalem_Mount_of_Olives_BW_2010-09-20_07-57-31.JPG',
+  cenacle: 'https://upload.wikimedia.org/wikipedia/commons/a/ad/The_Cenacle%2C_Last_Supper_Room_-_Mount_Zion%2C_Jerusalem_01.jpg',
+  calvary: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Traditional_site_of_the_Calvary_or_Golgotha_where_Jesus_was_crucified_%2810805635084%29.jpg',
+  gardenTomb: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/Garden_Tomb_P1190168.JPG',
+  gardenTomb2: 'https://upload.wikimedia.org/wikipedia/commons/9/9d/PikiWiki_Israel_22083_The_Garden_Tomb_-_East_Jerusalem.JPG',
+  gethsemane: 'https://upload.wikimedia.org/wikipedia/commons/6/66/Jerusalem_Garten_Gethsemane_1.JPG',
+  gethsemaneChurch: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Church_of_All_Nations_%28Jerusalem%29-Facade.jpg',
+  ascension: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Chapel_of_the_Ascension_in_Jerusalem.jpg',
+  jordanBW: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Jordan_Baptism_site_BW_4.JPG',
+  judeanDesert: 'https://upload.wikimedia.org/wikipedia/commons/c/cf/Judean-desert-wadi-perazim-c.JPG',
+  temptationMonastery: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Monastery_of_the_Temptation_%28Jeriho%29.jpg',
+  jericho: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Jericho-Qarantal-454.jpg',
+  capernaumShore: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Capernaum_See_Genezareth_1.JPG',
+  capernaumSynagogue: 'https://upload.wikimedia.org/wikipedia/commons/7/74/ISRAEL%2C_Capernaum%2C_The_Town_of_Jesus%2C_Capernaun_Byzantine_Synagogue%3B_16-1252-103_%282%29.JPG',
+  ancientBoat: 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Ancient_Boat_of_Sea_of_Galilee.jpg',
+  beatitudesChurch: 'https://upload.wikimedia.org/wikipedia/commons/a/a1/PikiWiki_Israel_15459_Church_of_the_Beatitudes.JPG',
+  beatitudesHill: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Beatitudes_P1020602.JPG',
+  kafrKanna: 'https://upload.wikimedia.org/wikipedia/commons/3/37/Kafr_Kanna_BW_1.JPG',
+  jacobsWell: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/Jacob%27s_Well.jpg',
+  tabghaChurch: 'https://upload.wikimedia.org/wikipedia/commons/7/7f/Holy_Land_2016_P0432_Church_of_the_Multiplication.jpg',
+  tabghaMosaic: 'https://upload.wikimedia.org/wikipedia/commons/9/97/106068_the_loaves_and_fishes-german_catholic_church_in_ta_PikiWiki_Israel.jpg',
+  seaSunset: 'https://upload.wikimedia.org/wikipedia/commons/9/99/PikiWiki_Israel_34111_Sunset_over_Sea_of_Galilee.JPG',
+  bethsaida: 'https://upload.wikimedia.org/wikipedia/commons/9/91/The_Site_of_Ancient_Bethsaida.jpg',
+  fishermanHouse: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/Et-Tell_House_of_a_fisherman.jpg',
+  kursi: 'https://upload.wikimedia.org/wikipedia/commons/7/72/132183_kursi_national_park_sea_of_galilee_PikiWiki_Israel.jpg',
+  kursiMosaic: 'https://upload.wikimedia.org/wikipedia/commons/1/1e/Arches_and_mosaic_in_Kursi%27s_monastery.jpg',
+  cavePan: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Cave_of_Pan%2C_Banias%2C_2019_%2801%29.jpg',
+  caesareaPhilippi: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Caesarea_Philippi_%285418947236%29.jpg',
+  mountTabor: 'https://upload.wikimedia.org/wikipedia/commons/8/8f/Mount_Tabor%2C_Israel.jpg',
+  transfigurationChurch: 'https://upload.wikimedia.org/wikipedia/commons/2/25/Church_of_Transfiguration_Mount_Tabor200704.JPG',
+  herodium: 'https://upload.wikimedia.org/wikipedia/commons/2/2b/2010-06-21_06-58-55_Israel_Herodium_JH_%2852775621221%29.jpg',
+  pyramids: 'https://upload.wikimedia.org/wikipedia/commons/a/af/All_Gizah_Pyramids.jpg',
+  lazarus: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Lazarus_Bethany.JPG',
+  emmaus: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Emmaus_Nicopolis_basilica.JPG',
+  nainChurch: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Church_of_the_Resurrection_of_the_Widow%27s_Son_01.jpg',
+  nainChurch2: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Church_of_the_Resurrection_of_the_Widow%27s_Son_02.jpg',
+};
+
+const img = {
+  1:  [V.nazarethBW, V.annunciationInside2019],
+  2:  [V.nativityInterior, V.nativityGrotto],
+  3:  [V.templeMount, V.templeModel],
+  4:  [V.nativityExt, V.nativityInterior],
+  5:  [V.herodium, V.pyramids],
+  6:  [V.nazarethPanorama, V.nazarethBW],
+  7:  [V.templeModel2, V.westernWall],
+  8:  [V.jordanBW, V.judeanDesert],
+  9:  [V.jordanBW, V.judeanDesert],
+  10: [V.judeanDesert, V.temptationMonastery],
+  11: [V.bethsaida, V.fishermanHouse],
+  12: [V.kafrKanna, V.kafrKanna],
+  13: [V.templeMount, V.westernWall],
+  14: [V.holySepulchreBW, V.templeMount],
+  15: [V.jacobsWell, V.jacobsWell],
+  16: [V.capernaumShore, V.capernaumSynagogue],
+  17: [V.nazarethPanorama, V.nazarethBW],
+  18: [V.capernaumSynagogue, V.capernaumShore],
+  19: [V.beatitudesChurch, V.beatitudesHill],
+  20: [V.ancientBoat, V.bethsaida],
+  21: [V.capernaumSynagogue, V.capernaumShore],
+  22: [V.nainChurch, V.nainChurch2],
+  23: [V.seaSunset, V.ancientBoat],
+  24: [V.kursi, V.kursiMosaic],
+  25: [V.capernaumSynagogue, V.capernaumShore],
+  26: [V.tabghaChurch, V.tabghaMosaic],
+  27: [V.seaSunset, V.capernaumShore],
+  28: [V.cavePan, V.caesareaPhilippi],
+  29: [V.mountTabor, V.transfigurationChurch],
+  30: [V.lazarus, V.mountOlives],
+  31: [V.jericho, V.judeanDesert],
+  32: [V.judeanDesert, V.jericho],
+  33: [V.templeMount, V.mountOlives],
+  34: [V.westernWall, V.templeMount],
+  35: [V.cenacle, V.mountOlives],
+  36: [V.gethsemane, V.gethsemaneChurch],
+  37: [V.calvary, V.westernWall],
+  38: [V.calvary, V.holySepulchre],
+  39: [V.gardenTomb, V.gardenTomb2],
+  40: [V.holySepulchre, V.gardenTomb],
+  41: [V.emmaus, V.judeanDesert],
+  42: [V.cenacle, V.holySepulchre],
+  43: [V.tabghaChurch, V.tabghaMosaic],
+  44: [V.ascension, V.templeMount],
+};
+
+let lines = fs.readFileSync('src/data/events.js', 'utf8').split('\n');
+lines = lines.map((line) => {
+  const m = line.match(/\{ id:(\d+),/);
+  if (!m) return line;
+  const id = Number(m[1]);
+  const urls = img[id];
+  if (!urls) return line;
+  return line
+    .replace(/photo:'[^']*'/, `photo:'${urls[0]}'`)
+    .replace(/detail:'[^']*'/, `detail:'${urls[1]}'`);
+});
+fs.writeFileSync('src/data/events.js', lines.join('\n'));
+console.log('Applied verified images to', Object.keys(img).length, 'events');
