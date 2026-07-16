@@ -1,4 +1,15 @@
 /** Per-moment media — unique backdrop / photo / detail with site-accurate labels */
+
+/** Wikimedia Commons thumbnail URL — avoids multi-MB originals.
+ *  Wikimedia only serves whitelisted widths (250/500/960/1280/2560). */
+export function thumb(url, w = 960) {
+  const allowed = [250, 500, 960, 1280];
+  const width = allowed.find(a => a >= w) ?? 1280;
+  const m = url.match(/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/(\w)\/(\w\w)\/(.+)$/);
+  if (!m) return url;
+  return `https://upload.wikimedia.org/wikipedia/commons/thumb/${m[1]}/${m[2]}/${m[3]}/${width}px-${m[3]}`;
+}
+
 const U = {
   nazarethBW: 'https://upload.wikimedia.org/wikipedia/commons/b/b5/Nazaret_Verkuendigungsbasilika_BW_16.JPG',
   annunciationInside: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/AnnunciationChurchNazarethInside1.jpg',
@@ -98,8 +109,8 @@ export const EVENT_MEDIA = {
   36: { backdrop: U.gethsemane, photo: U.gethsemaneChurch, detail: U.gethsemane, photoLabel: 'Church of All Nations', detailLabel: 'Ancient olive grove' },
   37: { backdrop: U.oldCityDusk, photo: U.calvary, detail: U.holySepulchreBW, photoLabel: 'Traditional Calvary site', detailLabel: 'Via Dolorosa quarter' },
   38: { backdrop: U.calvary, photo: U.holySepulchre, detail: U.gardenTomb, photoLabel: 'Church of the Holy Sepulchre', detailLabel: 'Garden Tomb alternative site' },
-  39: { backdrop: U.gardenTomb, photo: U.gardenTomb2, detail: U.holySepulchre, photoLabel: 'Garden Tomb, East Jerusalem', detailLabel: 'Holy Sepulchre edicule' },
-  40: { backdrop: U.holySepulchre, photo: U.gardenTomb, detail: U.calvary, photoLabel: 'Garden Tomb at dawn', detailLabel: 'Golgotha rock face' },
+  39: { backdrop: U.gardenTomb, photo: U.holySepulchre, detail: U.gardenTomb2, photoLabel: 'Church of the Holy Sepulchre — traditional tomb site', detailLabel: 'Garden Tomb — 19th-century devotional alternative' },
+  40: { backdrop: U.holySepulchre, photo: U.gardenTomb, detail: U.calvary, photoLabel: 'Garden Tomb — devotional alternative site', detailLabel: 'Golgotha rock face, Holy Sepulchre' },
   41: { backdrop: U.judeanDesert, photo: U.emmaus, detail: U.tellEsSultan, photoLabel: 'Emmaus Nicopolis basilica', detailLabel: 'Ancient road through the hill country' },
   42: { backdrop: U.cenacle, photo: U.holySepulchre, detail: U.gardenTomb2, photoLabel: 'Holy Sepulchre — resurrection witness', detailLabel: 'Garden Tomb rolling stone' },
   43: { backdrop: U.seaSunset, photo: U.tabghaMosaic, detail: U.ancientBoat, photoLabel: 'Tabgha mosaic — shore meal', detailLabel: 'Galilee fishing boat' },
