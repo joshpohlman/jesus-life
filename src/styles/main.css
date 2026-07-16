@@ -637,6 +637,85 @@ body {
   color: rgba(245,237,216,0.88);
 }
 
+/* Route strips — the journey guide between chapters */
+.route-strip {
+  position: relative;
+  border-top: 1px solid rgba(245,237,216,0.04);
+  padding-bottom: 4rem;
+}
+.route-photo {
+  position: relative;
+  height: 58vh;
+  min-height: 320px;
+  overflow: hidden;
+  margin: 0;
+}
+.route-photo img {
+  width: 100%;
+  height: 112%;
+  object-fit: cover;
+  display: block;
+  cursor: zoom-in;
+}
+.route-photo figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2.2rem 3.5rem 0.9rem;
+  background: linear-gradient(transparent, rgba(13,10,6,0.88));
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.route-body {
+  padding: 2.25rem 3.5rem 0;
+  max-width: 46rem;
+}
+.route-kicker {
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--phase-color);
+  margin-bottom: 0.85rem;
+  font-weight: 600;
+}
+.route-guide {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  line-height: 1.75;
+  color: rgba(245,237,216,0.86);
+  margin-bottom: 1.5rem;
+}
+.route-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.route-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--bg-card);
+  min-width: 8.5rem;
+}
+.route-fact span {
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.route-fact strong {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* Moments */
 .moment {
   min-height: 100vh;
@@ -1069,6 +1148,9 @@ body {
     padding: 1.5rem 1rem calc(var(--mobile-dock-h) + var(--safe-bottom) + 2rem);
   }
   .moment-title { font-size: clamp(1.85rem, 8vw, 2.5rem); }
+  .route-photo { height: 40vh; min-height: 240px; }
+  .route-photo figcaption { padding: 2rem 1.25rem 0.7rem; }
+  .route-body { padding: 1.75rem 1.25rem 0; }
   .chapter-hero-inner { padding: 2.5rem 1.25rem 3.5rem; }
   .chapter-title { font-size: clamp(2.2rem, 9vw, 3rem); }
   .chapter-land { padding: 1rem 1.1rem; }

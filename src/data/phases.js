@@ -8,6 +8,17 @@ export const PHASES = [
     hero: '/images/journey/bethlehem-manger.jpg',
     heroAlt: 'Reconstruction of a first-century stable cave in Bethlehem under the star',
     land: 'The story opens in two very different landscapes: Nazareth, a farming village of a few hundred people in the limestone hills of Lower Galilee, and Bethlehem, a shepherd town on the ridge of the Judean hill country, 2,500 feet above sea level. Between them lay 90 miles of Roman roads through Samaria — a journey of about a week on foot.',
+    route: {
+      label: 'Nazareth → Bethlehem',
+      photo: 'https://upload.wikimedia.org/wikipedia/commons/2/23/JPF-Jezreel_Valley_and_Mount_Tabor.JPG',
+      caption: 'The Jezreel Valley and Mount Tabor — the view south from the Nazareth ridge, photographed today',
+      guide: 'Stand on the ridge above Nazareth and this is what you see: the broad Jezreel Valley, the crossroads of the ancient world, with Mount Tabor rising alone at its eastern edge. Every journey south began by dropping into this plain. Joseph and a heavily pregnant Mary crossed it, then followed the hill-country ridge road for the better part of a week to reach Bethlehem.',
+      facts: [
+        { k: 'Distance', v: '~90 miles' },
+        { k: 'On foot', v: '4–7 days' },
+        { k: 'Terrain', v: 'Valley, then ridge road' },
+      ],
+    },
   },
   {
     id: 2,
@@ -38,6 +49,17 @@ export const PHASES = [
     hero: '/images/journey/capernaum-village.jpg',
     heroAlt: 'Reconstruction of Capernaum — black basalt houses and fishing boats on the Sea of Galilee',
     land: 'The Sea of Galilee sits 700 feet below sea level in a bowl of hills that funnel sudden violent storms. Its shore was ringed with fishing villages built of black basalt — Capernaum, Bethsaida, Magdala — on the Via Maris trade route. Most of what Jesus said and did happened within sight of this one lake.',
+    route: {
+      label: 'The Sea of Galilee',
+      photo: 'https://upload.wikimedia.org/wikipedia/commons/b/b9/View_of_the_Sea_of_Galilee_%2814633578504%29.jpg',
+      caption: 'The Sea of Galilee from the Arbel cliffs above Magdala — the whole theater of the Galilean ministry in one view',
+      guide: 'This is the real lake, photographed from the Arbel cliffs. From this one spot you can see nearly everything in this chapter: Capernaum and Tabgha on the far northwest shore, the hills of the Beatitudes above them, the Golan rising across the water where the storms drop in, and Magdala directly below. A fisherman could sail the lake end to end in an afternoon — the entire Galilean ministry happened inside this bowl.',
+      facts: [
+        { k: 'Size', v: '13 × 8 miles' },
+        { k: 'Elevation', v: '700 ft below sea level' },
+        { k: 'Shoreline', v: 'Ringed by fishing villages' },
+      ],
+    },
   },
   {
     id: 5,
@@ -48,6 +70,17 @@ export const PHASES = [
     hero: '/images/recon/gethsemane-moon.jpg',
     heroAlt: 'Jerusalem\'s walls by moonlight seen from an olive grove',
     land: 'The pilgrim road from Jericho to Jerusalem climbs 3,400 feet in seventeen miles, rising from palm-shaded desert oasis through the wilderness of the Good Samaritan parable to the gates of the holy city. Jesus walked it knowing exactly what waited at the top.',
+    route: {
+      label: 'Jericho → Jerusalem',
+      photo: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/Holy_Land_2016_P0910_Judean_Desert_Wadi_Qelt.jpg',
+      caption: 'Wadi Qelt, the desert canyon the Jericho–Jerusalem road follows — the monastery clings to cliffs hermits have inhabited since the 4th century',
+      guide: 'This canyon is the road. The ancient path from Jericho to Jerusalem climbs alongside Wadi Qelt through exactly this landscape — bare rock, no shade, no water, and enough blind corners that Jesus set his parable about a traveler beaten by robbers right here. Pilgrims walked it in a long day: starting among Jericho\'s palms below sea level and cresting the Mount of Olives 3,400 feet higher, with the Temple suddenly filling the view.',
+      facts: [
+        { k: 'Distance', v: '17 miles' },
+        { k: 'Climb', v: '+3,400 ft' },
+        { k: 'On foot', v: 'One hard day' },
+      ],
+    },
   },
   {
     id: 6,
@@ -58,6 +91,17 @@ export const PHASES = [
     hero: '/images/journey/gethsemane-night.jpg',
     heroAlt: 'Reconstruction of Gethsemane by full moon, Jerusalem and the Temple beyond',
     land: 'Passover swelled Jerusalem from roughly 40,000 people to several times that. The week unfolds in a space you can walk in an afternoon: the Mount of Olives, the Kidron Valley, the Temple courts, an upper room on Mount Zion, and a garden of ancient olives at the foot of the hill — Gethsemane, "the oil press."',
+    route: {
+      label: 'Mount of Olives → the City',
+      photo: 'https://upload.wikimedia.org/wikipedia/commons/4/4b/Jerusalem_panorama_from_Mount_of_Olives_07112018.jpg',
+      caption: 'Jerusalem from the Mount of Olives today — olive slopes, the Kidron Valley, and the Temple Mount, the same view the Palm Sunday crowd had',
+      guide: 'This is the view that opens Passion Week — photographed from the Mount of Olives, exactly where the Palm Sunday road crests the hill. Jesus rode a donkey down this slope, through the olive groves and ancient tombs of the Kidron Valley in the foreground, and up into the city. Everything in this chapter happens inside this single frame: the Temple courts, the Upper Room on the far hill, Gethsemane at the foot of the slope you are standing on, and Golgotha just beyond the walls.',
+      facts: [
+        { k: 'Descent', v: '~300 ft into the Kidron' },
+        { k: 'Walk', v: 'Under an hour' },
+        { k: 'Passover crowd', v: '100,000+ pilgrims' },
+      ],
+    },
   },
   {
     id: 7,

@@ -73,6 +73,25 @@ function buildStory() {
           </div>
         </div>`;
       story.appendChild(s);
+
+      if (ph.route) {
+        const r = document.createElement('section');
+        r.className = 'route-strip';
+        r.style.setProperty('--phase-color', ph.color);
+        r.innerHTML = `
+          <figure class="route-photo">
+            <img src="${thumb(ph.route.photo, 1280)}" alt="${ph.route.caption}" loading="lazy" data-full="${ph.route.photo}" data-label="${ph.route.caption}" />
+            <figcaption>${ph.route.caption}</figcaption>
+          </figure>
+          <div class="route-body">
+            <p class="route-kicker">The road · ${ph.route.label}</p>
+            <p class="route-guide">${ph.route.guide}</p>
+            <div class="route-facts">
+              ${ph.route.facts.map(f => `<div class="route-fact"><span>${f.k}</span><strong>${f.v}</strong></div>`).join('')}
+            </div>
+          </div>`;
+        story.appendChild(r);
+      }
     }
 
     const m = mediaFor(ev);
@@ -270,7 +289,7 @@ function setupLightbox() {
   let items = [];
   let lbIndex = 0;
 
-  document.querySelectorAll('.visual-frame.primary img, .visual-thumb').forEach(el => {
+  document.querySelectorAll('.visual-frame.primary img, .visual-thumb, .route-photo img').forEach(el => {
     const src = el.dataset.full;
     const label = el.dataset.label || '';
     if (!src) return;
@@ -420,6 +439,24 @@ function setupAnimations() {
       ...enter,
       scrollTrigger: { trigger: ch, start: 'top 55%', toggleActions: 'play none none none' },
     });
+  });
+
+  gsap.utils.toArray('.route-strip').forEach(strip => {
+    gsap.from(strip.querySelectorAll('.route-kicker, .route-guide, .route-facts'), {
+      y: 28,
+      opacity: 0,
+      stagger: 0.09,
+      ...enter,
+      scrollTrigger: { trigger: strip, start: 'top 62%', toggleActions: 'play none none none' },
+    });
+    const img = strip.querySelector('.route-photo img');
+    if (img) {
+      gsap.fromTo(img, { y: '-1%' }, {
+        y: '-9%',
+        ease: 'none',
+        scrollTrigger: { trigger: strip, start: 'top bottom', end: 'bottom top', scrub: 1 },
+      });
+    }
   });
 
   document.querySelectorAll('.moment').forEach(moment => {
