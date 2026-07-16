@@ -48,6 +48,46 @@ function setupImageFallback() {
   }, true);
 }
 
+/** Inline SVG terrain cross-section that draws itself on scroll */
+function buildElevation(el) {
+  const W = 640, H = 170, padX = 14, padTop = 30, padBot = 34;
+  const xs = el.points.map(p => p[0]);
+  const ys = el.points.map(p => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs);
+  const y0 = Math.min(...ys, 0), y1 = Math.max(...ys);
+  const X = (m) => padX + ((m - x0) / (x1 - x0)) * (W - 2 * padX);
+  const Y = (f) => padTop + (1 - (f - y0) / (y1 - y0)) * (H - padTop - padBot);
+
+  const d = el.points.map((p, i) => `${i ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ');
+  const area = `${d} L${X(x1).toFixed(1)},${H - 2} L${X(x0).toFixed(1)},${H - 2} Z`;
+
+  const seaLevel = y0 < 0
+    ? `<line class="elev-sea" x1="${padX}" y1="${Y(0).toFixed(1)}" x2="${W - padX}" y2="${Y(0).toFixed(1)}" />
+       <text class="elev-sea-label" x="${W - padX}" y="${(Y(0) - 5).toFixed(1)}" text-anchor="end">sea level</text>`
+    : '';
+
+  const markers = el.markers.map(m => {
+    const pt = el.points.reduce((a, b) => Math.abs(b[0] - m.mi) < Math.abs(a[0] - m.mi) ? b : a);
+    const mx = X(m.mi), my = Y(pt[1]);
+    const anchor = m.mi <= x0 + (x1 - x0) * 0.12 ? 'start' : m.mi >= x1 - (x1 - x0) * 0.12 ? 'end' : 'middle';
+    return `<circle class="elev-marker" cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="3.5" />
+      <text class="elev-name" x="${mx.toFixed(1)}" y="${(my - 16).toFixed(1)}" text-anchor="${anchor}">${m.name}</text>
+      <text class="elev-ft" x="${mx.toFixed(1)}" y="${(my - 6).toFixed(1)}" text-anchor="${anchor}">${m.ft}</text>`;
+  }).join('');
+
+  return `
+    <div class="route-elevation">
+      <h4>${el.title}</h4>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" aria-label="${el.title}">
+        <path class="elev-area" d="${area}" />
+        ${seaLevel}
+        <path class="elev-line" d="${d}" />
+        ${markers}
+        <circle class="elev-walker" r="5" cx="${X(x0).toFixed(1)}" cy="${Y(el.points[0][1]).toFixed(1)}" />
+      </svg>
+    </div>`;
+}
+
 function buildStory() {
   let phase = '';
   EVENTS.forEach((ev, i) => {
@@ -76,12 +116,13 @@ function buildStory() {
 
       if (ph.route) {
         const r = document.createElement('section');
-        r.className = 'route-strip';
+        r.className = 'route-strip' + (ph.route.pan ? ' route-strip--pan' : '');
         r.style.setProperty('--phase-color', ph.color);
+        const panSrc = ph.route.pan ? thumb(ph.route.photo, 3840) : thumb(ph.route.photo, 1280);
         r.innerHTML = `
-          <figure class="route-photo">
-            <img src="${thumb(ph.route.photo, 1280)}" alt="${ph.route.caption}" loading="lazy" data-full="${ph.route.photo}" data-label="${ph.route.caption}" />
-            <figcaption>${ph.route.caption}</figcaption>
+          <figure class="route-photo${ph.route.pan ? ' route-photo--pan' : ''}">
+            <img src="${panSrc}" alt="${ph.route.caption}" loading="lazy" data-full="${ph.route.photo}" data-label="${ph.route.caption}" />
+            <figcaption>${ph.route.caption}${ph.route.pan ? '<span class="pan-hint">Keep scrolling to look across the city →</span>' : ''}</figcaption>
           </figure>
           <div class="route-body">
             <p class="route-kicker">The road · ${ph.route.label}</p>
@@ -89,6 +130,7 @@ function buildStory() {
             <div class="route-facts">
               ${ph.route.facts.map(f => `<div class="route-fact"><span>${f.k}</span><strong>${f.v}</strong></div>`).join('')}
             </div>
+            ${ph.route.elevation ? buildElevation(ph.route.elevation) : ''}
           </div>`;
         story.appendChild(r);
       }
@@ -421,23 +463,43 @@ function setupAnimations() {
   const enter = { ease: 'power3.out', duration: 0.7 };
 
   gsap.utils.toArray('.chapter-hero').forEach(ch => {
-    const img = ch.querySelector('.chapter-hero-media img');
-    // The "archaeological develop": sepia past resolves into full color as you arrive
-    gsap.fromTo(img,
-      { filter: 'sepia(0.85) brightness(0.82) contrast(0.94)', scale: 1.08 },
-      {
-        filter: 'sepia(0) brightness(1) contrast(1)',
-        scale: 1,
-        ease: 'none',
-        scrollTrigger: { trigger: ch, start: 'top 85%', end: 'top 5%', scrub: 1 },
-      }
-    );
     gsap.from(ch.querySelectorAll('.chapter-kicker, .chapter-title, .chapter-desc, .chapter-land'), {
       y: 32,
       opacity: 0,
       stagger: 0.09,
       ...enter,
       scrollTrigger: { trigger: ch, start: 'top 55%', toggleActions: 'play none none none' },
+    });
+  });
+
+  // Elevation profiles draw themselves; a dot "walks" the ridgeline
+  document.querySelectorAll('.route-elevation').forEach(wrap => {
+    const line = wrap.querySelector('.elev-line');
+    const walker = wrap.querySelector('.elev-walker');
+    const areaPath = wrap.querySelector('.elev-area');
+    const markers = wrap.querySelectorAll('.elev-marker, .elev-name, .elev-ft, .elev-sea, .elev-sea-label');
+    const len = line.getTotalLength();
+    line.style.strokeDasharray = len;
+    gsap.fromTo(line, { strokeDashoffset: len }, {
+      strokeDashoffset: 0,
+      ease: 'none',
+      scrollTrigger: { trigger: wrap, start: 'top 88%', end: 'top 30%', scrub: 1 },
+      onUpdate() {
+        const p = line.getPointAtLength(len * this.progress());
+        walker.setAttribute('cx', p.x);
+        walker.setAttribute('cy', p.y);
+      },
+    });
+    gsap.from(areaPath, {
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: { trigger: wrap, start: 'top 88%', end: 'top 50%', scrub: 1 },
+    });
+    gsap.from(markers, {
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.08,
+      scrollTrigger: { trigger: wrap, start: 'top 45%', toggleActions: 'play none none none' },
     });
   });
 
@@ -484,8 +546,9 @@ function setupAnimations() {
 
     const photo = moment.querySelector('.visual-frame.primary img');
     if (photo) {
-      gsap.fromTo(photo, { y: '-1%' }, {
+      gsap.fromTo(photo, { y: '-1%', scale: 1.06 }, {
         y: '-9%',
+        scale: 1,
         ease: 'none',
         scrollTrigger: { trigger: moment, start: 'top bottom', end: 'bottom top', scrub: 1 },
       });
@@ -520,10 +583,68 @@ setupLightbox();
 setupMobileDock();
 setupMobileMapToggle();
 
+/** Desktop: pinned "arrival" scenes — the tour-guide moments */
+function setupPinnedScenes() {
+  // Chapter heroes: pin while the sepia past develops and you push into the scene
+  gsap.utils.toArray('.chapter-hero').forEach(ch => {
+    const img = ch.querySelector('.chapter-hero-media img');
+    gsap.fromTo(img,
+      { filter: 'sepia(0.85) brightness(0.82) contrast(0.94)', scale: 1.18 },
+      {
+        filter: 'sepia(0) brightness(1) contrast(1)',
+        scale: 1,
+        ease: 'none',
+        scrollTrigger: { trigger: ch, start: 'top top', end: '+=110%', pin: true, scrub: 1, anticipatePin: 1 },
+      }
+    );
+  });
+
+  // Panorama sweep: pin and pan across the full-resolution vista
+  document.querySelectorAll('.route-photo--pan').forEach(fig => {
+    const img = fig.querySelector('img');
+    img.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
+    gsap.to(img, {
+      x: () => -Math.max(0, img.scrollWidth - fig.clientWidth),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: fig,
+        start: 'top top',
+        end: '+=250%',
+        pin: true,
+        scrub: 1,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+      },
+    });
+  });
+}
+
+/** Small screens: the same develop effect, unpinned */
+function setupSimpleDevelop() {
+  gsap.utils.toArray('.chapter-hero').forEach(ch => {
+    const img = ch.querySelector('.chapter-hero-media img');
+    gsap.fromTo(img,
+      { filter: 'sepia(0.85) brightness(0.82) contrast(0.94)', scale: 1.08 },
+      {
+        filter: 'sepia(0) brightness(1) contrast(1)',
+        scale: 1,
+        ease: 'none',
+        scrollTrigger: { trigger: ch, start: 'top 85%', end: 'top 5%', scrub: 1 },
+      }
+    );
+  });
+}
+
 const mm = gsap.matchMedia();
 mm.add('(prefers-reduced-motion: no-preference)', () => {
   setupHeroAnim();
   setupAnimations();
+});
+mm.add('(prefers-reduced-motion: no-preference) and (min-width: 1025px)', () => {
+  setupPinnedScenes();
+});
+mm.add('(prefers-reduced-motion: no-preference) and (max-width: 1024px)', () => {
+  setupSimpleDevelop();
 });
 mm.add('(prefers-reduced-motion: reduce)', () => {
   $('site-nav')?.classList.add('is-visible');

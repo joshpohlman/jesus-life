@@ -716,6 +716,96 @@ body {
   font-weight: 600;
 }
 
+/* Panorama sweep — pinned horizontal pan across a vista */
+.route-photo--pan {
+  height: 100vh;
+  height: 100svh;
+  min-height: 400px;
+}
+.route-photo--pan img {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  will-change: transform;
+}
+.pan-hint {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: rgba(245,237,216,0.55);
+  text-transform: none;
+}
+
+/* Elevation profile — terrain cross-section */
+.route-elevation {
+  margin-top: 2rem;
+  padding: 1.25rem 1.35rem 0.9rem;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: var(--bg-card);
+}
+.route-elevation h4 {
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--phase-color);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+.route-elevation svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.elev-line {
+  fill: none;
+  stroke: var(--phase-color);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.elev-area {
+  fill: var(--phase-color);
+  opacity: 0.12;
+  stroke: none;
+}
+.elev-sea {
+  stroke: rgba(127,168,201,0.55);
+  stroke-width: 1;
+  stroke-dasharray: 4 5;
+}
+.elev-sea-label {
+  fill: rgba(127,168,201,0.8);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.elev-marker {
+  fill: var(--text);
+  stroke: var(--bg);
+  stroke-width: 1.5;
+}
+.elev-walker {
+  fill: var(--phase-color);
+  stroke: #fff;
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 6px var(--phase-color));
+}
+.elev-name {
+  fill: var(--text);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+}
+.elev-ft {
+  fill: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+}
+
 /* Moments */
 .moment {
   min-height: 100vh;

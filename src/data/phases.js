@@ -18,6 +18,15 @@ export const PHASES = [
         { k: 'On foot', v: '4–7 days' },
         { k: 'Terrain', v: 'Valley, then ridge road' },
       ],
+      elevation: {
+        title: 'The climb — Nazareth to Bethlehem',
+        points: [[0, 1138], [8, 230], [18, 1200], [35, 2100], [55, 1900], [75, 2300], [85, 2474], [90, 2543]],
+        markers: [
+          { mi: 0, name: 'Nazareth', ft: '1,138 ft' },
+          { mi: 8, name: 'Jezreel Valley', ft: '230 ft' },
+          { mi: 90, name: 'Bethlehem', ft: '2,543 ft' },
+        ],
+      },
     },
   },
   {
@@ -80,6 +89,15 @@ export const PHASES = [
         { k: 'Climb', v: '+3,400 ft' },
         { k: 'On foot', v: 'One hard day' },
       ],
+      elevation: {
+        title: 'The climb — Jericho to Jerusalem',
+        points: [[0, -846], [2, -700], [5, -100], [8, 600], [11, 1300], [13.5, 2000], [15.5, 2652], [17, 2474]],
+        markers: [
+          { mi: 0, name: 'Jericho', ft: '−846 ft' },
+          { mi: 15.5, name: 'Mt of Olives', ft: '2,652 ft' },
+          { mi: 17, name: 'Jerusalem', ft: '2,474 ft' },
+        ],
+      },
     },
   },
   {
@@ -93,6 +111,7 @@ export const PHASES = [
     land: 'Passover swelled Jerusalem from roughly 40,000 people to several times that. The week unfolds in a space you can walk in an afternoon: the Mount of Olives, the Kidron Valley, the Temple courts, an upper room on Mount Zion, and a garden of ancient olives at the foot of the hill — Gethsemane, "the oil press."',
     route: {
       label: 'Mount of Olives → the City',
+      pan: true,
       photo: 'https://upload.wikimedia.org/wikipedia/commons/4/4b/Jerusalem_panorama_from_Mount_of_Olives_07112018.jpg',
       caption: 'Jerusalem from the Mount of Olives today — olive slopes, the Kidron Valley, and the Temple Mount, the same view the Palm Sunday crowd had',
       guide: 'This is the view that opens Passion Week — photographed from the Mount of Olives, exactly where the Palm Sunday road crests the hill. Jesus rode a donkey down this slope, through the olive groves and ancient tombs of the Kidron Valley in the foreground, and up into the city. Everything in this chapter happens inside this single frame: the Temple courts, the Upper Room on the far hill, Gethsemane at the foot of the slope you are standing on, and Golgotha just beyond the walls.',
